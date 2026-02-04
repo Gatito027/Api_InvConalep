@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const cspConfig = require('./Config/cspConfig');
-
+const mainRoutes = require('./Routers/Main.Routes');
 //*Configuracion de Cors
 const dotenv = require('dotenv');
 dotenv.config();
@@ -37,6 +37,8 @@ app.use(cookieParser());
 
 // Middleware para parsear JSON
 app.use(express.json());
+
+app.use('/', mainRoutes, cspConfig);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
