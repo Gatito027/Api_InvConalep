@@ -4,6 +4,7 @@ const loginLimiter = require('../Utils/rateLimiter');
 const { body } = require('express-validator');
 const { validarErrores } = require('../Utils/expressValidator');
 const registerController = require('../Controllers/Register.controller');
+const loginController = require('../Controllers/Login.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -37,5 +38,7 @@ router.post('/registrar-usuario', [
 validarErrores,
 registerController.register
 );
+
+router.post('/login', loginController.login)
 
 module.exports = router;

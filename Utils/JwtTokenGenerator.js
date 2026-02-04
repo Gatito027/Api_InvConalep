@@ -13,10 +13,10 @@ class JwtTokenGenerator {
         const key = Buffer.from(jwtOptions.secret, 'ascii');
 
         const claims = {
-            sub: usuarioData.id,
-            usuario: usuarioData.usuario,
+            sub: usuarioData.usuarioid,
+            usuario: usuarioData.nombreusuario,
             nombre: usuarioData.nombre,
-            area: usuarioData.area,
+            area: usuarioData.area_acargo,
             rol: usuarioData.rol,
             permisos: usuarioData.permisos
         };
