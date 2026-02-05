@@ -5,6 +5,7 @@ const { body } = require('express-validator');
 const { validarErrores } = require('../Utils/expressValidator');
 const registerController = require('../Controllers/Register.controller');
 const loginController = require('../Controllers/Login.controller');
+const profileController = require('../Controllers/Profile.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -39,6 +40,16 @@ validarErrores,
 registerController.register
 );
 
-router.post('/login', loginController.login)
+router.post('/login', [
+  body('_usuario')
+    .notEmpty().withMessage('El nombre de usuario es requerido')
+    .isString().withMessage('El usuario debe ser una cadena de texto'),
+  
+  body('_password')
+    .notEmpty().withMessage('La contraseña es requerida')
+    .isString().withMessage('La contraseña debe ser una cadena de texto')
+], loginLimiter, loginController.login);
+
+router.get('/profile', profileController.profile);
 
 module.exports = router;
