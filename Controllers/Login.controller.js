@@ -23,9 +23,9 @@ const login = async (req, res) => {
         if (!result) {
             logger.info(`Usuario ${_usuario} no encontrado`);
             response.isSuccess = false;
-            response.message = "Usuario no encontrado";
+            response.message = "Credenciales inválidas";
             response.data = null;
-            return res.status(404).json(response);
+            return res.status(401).json(response);
         }
 
         // Validar contraseña
@@ -49,14 +49,13 @@ const login = async (req, res) => {
 
         logger.info(`El usuario ${_usuario} inició sesión correctamente`);
         response.isSuccess = true;
-        response.message = "Login exitoso";
         response.data = data;
 
         // Primero setear cookie, luego enviar respuesta
         res.cookie('token', token, {
-            sameSite: 'none',
-            secure: true,
-            httpOnly: true
+            sameSite: "lax",
+            secure: false,
+            httpOnly: false
         });
 
         return res.status(200).json(response);

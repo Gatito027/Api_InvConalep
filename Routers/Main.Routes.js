@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const loginLimiter = require('../Utils/rateLimiter');
 const { body } = require('express-validator');
+const checkPermissions = require('../Utils/CheckPermissions');
 const { validarErrores } = require('../Utils/expressValidator');
 const registerController = require('../Controllers/Register.controller');
 const loginController = require('../Controllers/Login.controller');
 const profileController = require('../Controllers/Profile.controller');
+const logoutController = require('../Controllers/Logout.controller');
+const listaController = require('../Controllers/ListaUsuarios.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -51,5 +54,9 @@ router.post('/login', [
 ], loginLimiter, loginController.login);
 
 router.get('/profile', profileController.profile);
+
+router.post('/logout', logoutController.logout);
+
+router.get('/usuarios', checkPermissions.checkPermissions(['Usuarios']), listaController.listaUsuarios);
 
 module.exports = router;

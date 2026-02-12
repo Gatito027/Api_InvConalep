@@ -1,7 +1,7 @@
-const AuthenticationExtensions = require('./AuthenticationExtensions');
+const AuthenticationExtensions = require('./AutheticationExtensions');
 const ResponseDto = require('../Models/Dto/ResponseDto');
 
-const checkPermissions = (permisoComprobar) => {
+const checkPermissions = (permisosComprobar = []) => {
     return (req, res, next) => {
         const { token } = req.cookies;
         const validar = AuthenticationExtensions.addJwtAuthentication(token);
@@ -11,8 +11,13 @@ const checkPermissions = (permisoComprobar) => {
             return res.status(401).json(response);
         }
 
-        if (!validar.data.permisos.includes(permisoComprobar)) {
-            const response = new ResponseDto(false, "No tienes permiso", null);
+        const permisosUsuario = validar.data?.permisos || [];
+
+        // Verifica que TODOS los permisos requeridos estén en los permisos del usuario
+        const tieneTodos = permisosComprobar.every(p => permisosUsuario.includes(p));
+
+        if (!tieneTodos) {
+            const response = new ResponseDto(false, "No tienes los permisos necesarios", null);
             return res.status(403).json(response);
         }
 
@@ -22,3 +27,4 @@ const checkPermissions = (permisoComprobar) => {
 };
 
 module.exports = { checkPermissions };
+

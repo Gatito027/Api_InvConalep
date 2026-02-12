@@ -39,7 +39,7 @@ const profile = async (req, res) => {
         logger.info('Consulta de permisos ejecutada con éxito');
 
         response.isSuccess = true;
-        response.message = "Login exitoso";
+        response.message = "";
         response.data = data;
 
         logger.info(`Login exitoso para usuario: ${validar.data.usuario}`);

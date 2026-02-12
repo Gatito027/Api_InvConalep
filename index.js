@@ -6,39 +6,40 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const cspConfig = require('./Config/cspConfig');
 const mainRoutes = require('./Routers/Main.Routes');
-//*Configuracion de Cors
 const dotenv = require('dotenv');
 dotenv.config();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
+//* Configuración de CORS
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : [];
 
 const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
       const msg = 'El origen CORS no está permitido.';
       return callback(new Error(msg), false);
     }
-    return callback(null, true);
   },
-  credentials: true,  // Permitir credenciales
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
-//*Configuracion del helmet
-app.use(helmet());
-app.use(cspConfig);
-//*Permite usar json
+
+//* Middlewares de parsing
 app.use(express.json());
-//* Configura el middleware de parsing de cuerpo (body-parser)
 app.use(express.urlencoded({ extended: true }));
-//* Configura el middleware csurf con protección basada en cookies
 app.use(cookieParser());
 
-// Middleware para parsear JSON
-app.use(express.json());
+//* Seguridad
+app.use(helmet());
+app.use(cspConfig);
 
-app.use('/', mainRoutes, cspConfig);
+//* Rutas principales
+app.use('/', mainRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
