@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const cspConfig = require('./Config/cspConfig');
 const mainRoutes = require('./Routers/Main.Routes');
+const dataFormsRoutes = require('./Routers/DataForms.Routes');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -40,6 +41,8 @@ app.use(cspConfig);
 
 //* Rutas principales
 app.use('/', mainRoutes);
+
+app.use('/data', dataFormsRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
