@@ -9,6 +9,7 @@ const loginController = require('../Controllers/Login.controller');
 const profileController = require('../Controllers/Profile.controller');
 const logoutController = require('../Controllers/Logout.controller');
 const listaController = require('../Controllers/ListaUsuarios.controller');
+const registrarAreaController = require('../Controllers/RegistrarArea.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -58,5 +59,13 @@ router.get('/profile', profileController.profile);
 router.post('/logout', logoutController.logout);
 
 router.get('/usuarios', checkPermissions.checkPermissions(['Usuarios']), listaController.listaUsuarios);
+
+router.post('/resgistrar_area', [
+  body('_area')
+    .notEmpty().withMessage('El area es requerida')
+    .isString().withMessage('El area debe ser una cadena de texto')
+    .isLength({ min: 2, max: 255 }).withMessage('El area debe tener entre 2 y 255 caracteres')],
+    checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
+  registrarAreaController.RegistrarArea);
 
 module.exports = router;
