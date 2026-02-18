@@ -10,6 +10,7 @@ const profileController = require('../Controllers/Profile.controller');
 const logoutController = require('../Controllers/Logout.controller');
 const listaController = require('../Controllers/ListaUsuarios.controller');
 const registrarAreaController = require('../Controllers/RegistrarArea.controller');
+const DeleteUsuario = require('../Controllers/DeleteUsuario.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -67,5 +68,11 @@ router.post('/resgistrar_area', [
     .isLength({ min: 2, max: 255 }).withMessage('El area debe tener entre 2 y 255 caracteres')],
     checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
   registrarAreaController.RegistrarArea);
+
+  router.delete('/eliminar-usuario', [
+    body('_usuariId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+  ]);
 
 module.exports = router;
