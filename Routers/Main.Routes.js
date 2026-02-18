@@ -40,16 +40,16 @@ router.post('/registrar-usuario', [
     .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
     .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
     .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
-], 
-validarErrores,
-registerController.register
+],
+  validarErrores,
+  registerController.register
 );
 
 router.post('/login', [
   body('_usuario')
     .notEmpty().withMessage('El nombre de usuario es requerido')
     .isString().withMessage('El usuario debe ser una cadena de texto'),
-  
+
   body('_password')
     .notEmpty().withMessage('La contraseña es requerida')
     .isString().withMessage('La contraseña debe ser una cadena de texto')
@@ -66,13 +66,16 @@ router.post('/resgistrar_area', [
     .notEmpty().withMessage('El area es requerida')
     .isString().withMessage('El area debe ser una cadena de texto')
     .isLength({ min: 2, max: 255 }).withMessage('El area debe tener entre 2 y 255 caracteres')],
-    checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
+  checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
   registrarAreaController.RegistrarArea);
 
-  router.delete('/eliminar-usuario', [
-    body('_usuariId')
+router.delete('/eliminar-usuario', [
+  body('_usuariId')
     .notEmpty().withMessage('El usuario es requerido')
     .isInt().withMessage('El usuario debe ser un número entero'),
-  ]);
+],
+  checkPermissions.checkPermissions(['Usuarios', 'Eliminar Usuario'],
+    DeleteUsuario.DeleteUsuario
+  ));
 
 module.exports = router;
