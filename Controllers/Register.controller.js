@@ -6,7 +6,6 @@ const ResponseDto = require('../Models/Dto/ResponseDto');
 const register = async (req, res) => {
     const response = new ResponseDto();
     try {
-        // TODO: Validar si tiene los permisos de acuerdo a la cookie
         const { _usuario, _nombre, _area, _rol, _password } = req.body;
 
         // Generar hash seguro

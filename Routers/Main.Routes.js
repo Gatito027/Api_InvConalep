@@ -12,6 +12,7 @@ const listaController = require('../Controllers/ListaUsuarios.controller');
 const registrarAreaController = require('../Controllers/RegistrarArea.controller');
 const DeleteUsuario = require('../Controllers/DeleteUsuario.controller');
 const ObtenerUsuario = require('../Controllers/ObtenerUsuario.controller');
+const ActualizarPasswordAdmin = require('../Controllers/ActualizarPasswordAdmin.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -54,19 +55,19 @@ router.post('/login', [
   body('_password')
     .notEmpty().withMessage('La contraseña es requerida')
     .isString().withMessage('La contraseña debe ser una cadena de texto')
-], loginLimiter, loginController.login);
+], validarErrores, loginLimiter, loginController.login);
 
 router.get('/profile', profileController.profile);
 
 router.post('/logout', logoutController.logout);
 
-router.get('/usuarios', checkPermissions.checkPermissions(['Usuarios']), listaController.listaUsuarios);
+router.get('/usuarios', checkPermissions.checkPermissions(['Usuarios']), validarErrores, listaController.listaUsuarios);
 
 router.post('/resgistrar_area', [
   body('_area')
     .notEmpty().withMessage('El area es requerida')
     .isString().withMessage('El area debe ser una cadena de texto')
-    .isLength({ min: 2, max: 255 }).withMessage('El area debe tener entre 2 y 255 caracteres')],
+    .isLength({ min: 2, max: 255 }).withMessage('El area debe tener entre 2 y 255 caracteres')], validarErrores,
   checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
   registrarAreaController.RegistrarArea);
 
@@ -75,14 +76,30 @@ router.delete('/eliminar-usuario', [
     .notEmpty().withMessage('El usuario es requerido')
     .isInt().withMessage('El usuario debe ser un número entero'),],
     checkPermissions.checkPermissions(['Usuarios', 'Eliminar Usuario']),
+    validarErrores,
     DeleteUsuario.DeleteUsuario);
 
-router.get('/obtener-usuario', [
+router.post('/obtener-usuario', [
   body('_usuarioId')
     .notEmpty().withMessage('El usuario es requerido')
     .isInt().withMessage('El usuario debe ser un número entero'),
-], checkPermissions.checkPermissions(['Usuarios', 'Detalles Usuario']),
+], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Detalles Usuario']),
 ObtenerUsuario.ObtenerUsuario
 );
+
+router.post('/cambiar-password', [
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+  body('_password')
+    .notEmpty().withMessage('La contraseña es requerida')
+    .isString().withMessage('La contraseña debe ser una cadena de texto')
+    .isLength({ min: 8, max: 100 }).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
+    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
+    .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
+    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
+    .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar contraseñas']),
+ActualizarPasswordAdmin.ActualizarPasswordAdmin);
 
 module.exports = router;
