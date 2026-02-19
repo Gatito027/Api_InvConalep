@@ -11,6 +11,7 @@ const logoutController = require('../Controllers/Logout.controller');
 const listaController = require('../Controllers/ListaUsuarios.controller');
 const registrarAreaController = require('../Controllers/RegistrarArea.controller');
 const DeleteUsuario = require('../Controllers/DeleteUsuario.controller');
+const ObtenerUsuario = require('../Controllers/ObtenerUsuario.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -70,12 +71,18 @@ router.post('/resgistrar_area', [
   registrarAreaController.RegistrarArea);
 
 router.delete('/eliminar-usuario', [
-  body('_usuariId')
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),],
+    checkPermissions.checkPermissions(['Usuarios', 'Eliminar Usuario']),
+    DeleteUsuario.DeleteUsuario);
+
+router.get('/obtener-usuario', [
+  body('_usuarioId')
     .notEmpty().withMessage('El usuario es requerido')
     .isInt().withMessage('El usuario debe ser un número entero'),
-],
-  checkPermissions.checkPermissions(['Usuarios', 'Eliminar Usuario'],
-    DeleteUsuario.DeleteUsuario
-  ));
+], checkPermissions.checkPermissions(['Usuarios', 'Detalles Usuario']),
+ObtenerUsuario.ObtenerUsuario
+);
 
 module.exports = router;

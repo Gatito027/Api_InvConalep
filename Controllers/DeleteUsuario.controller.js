@@ -6,11 +6,11 @@ const AuthenticationExtensions = require('../Utils/AutheticationExtensions');
 const DeleteUsuario = async (req, res) => {
     const response = new ResponseDto();
     try {
-        const { _usuariId } = req.body;
+        const { _usuarioId } = req.body;
         const { token } = req.cookies;
         const userData = AuthenticationExtensions.addJwtAuthentication(token);
         logger.info(`Eliminacion de usuario realizada por ${userData.data.usuario}`);
-        const result = await db.one("select * from eliminar_usuario($1)", [_usuariId]);
+        const result = await db.one("select * from eliminar_usuario($1)", [_usuarioId]);
         if (result.eliminar_usuario === "Ok") {
             logger.info(`Usuario eliminado correctamente`);
             response.isSuccess = true;
