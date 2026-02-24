@@ -14,6 +14,7 @@ const DeleteUsuario = require('../Controllers/DeleteUsuario.controller');
 const ObtenerUsuario = require('../Controllers/ObtenerUsuario.controller');
 const ActualizarPasswordAdmin = require('../Controllers/ActualizarPasswordAdmin.controller');
 const ActualizarRol = require('../Controllers/ActualizarRol.controller');
+const ActualizarArea = require('../Controllers/ActualizarArea.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -112,5 +113,15 @@ router.post('/cambiar-rol', [
     .isInt().withMessage('El rol debe ser un número entero')
 ], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar rol']),
 ActualizarRol.ActualizarRol);
+
+router.post('/cambiar-area', [
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+  body('_area')
+    .notEmpty().withMessage('El area es requerida')
+    .isInt().withMessage('El area debe ser un número entero')
+], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar area']),
+ActualizarArea.ActualizarArea);
 
 module.exports = router;

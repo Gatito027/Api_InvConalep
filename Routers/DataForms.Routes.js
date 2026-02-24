@@ -29,4 +29,16 @@ router.post(
     DataFormsController.ObtenerRolUsuario
 );
 
+router.post(
+    '/obtener-area-usuario',
+    [
+        body('_usuarioId')
+            .notEmpty().withMessage('El usuario es requerido')
+            .isInt().withMessage('El usuario debe ser un número entero')
+    ],
+    validarErrores,
+    checkPermissions.checkPermissions(['Usuarios']),
+    DataFormsController.ObtenerAreaUsuario
+);
+
 module.exports = router;

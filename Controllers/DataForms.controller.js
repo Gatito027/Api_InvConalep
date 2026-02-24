@@ -80,4 +80,35 @@ const ObtenerRolUsuario = async (req, res) => {
     }
 };
 
-module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario };
+const ObtenerAreaUsuario = async (req, res) => {
+    const response = new ResponseDto();
+    try {
+        const { token } = req.cookies;
+        const { _usuarioId } = req.body;
+        const userData = AuthenticationExtensions.addJwtAuthentication(token);
+
+        const data = await db.query("select areacargoid from usuarios where usuarioid = $1;",[_usuarioId]);
+        logger.info(`Consulta de area para ${_usuarioId} realizada por ${userData?.data?.usuario || 'usuario desconocido'}`);
+
+        if (data.length !== 0) {
+            response.isSuccess = true;
+            response.message = "";
+            response.data = data;
+            return res.status(200).json(response);
+        } else {
+            response.isSuccess = false;
+            response.message = "No se encontró area para el usuario";
+            response.data = null;
+            return res.status(404).json(response);
+        }
+
+    } catch (error) {
+        logger.error(`Error al obtener el area: ${error.message}`);
+        response.isSuccess = false;
+        response.message = "Error interno del servidor";
+        response.data = null;
+        return res.status(500).json(response);
+    }
+};
+
+module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario };
