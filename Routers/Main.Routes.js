@@ -13,6 +13,7 @@ const registrarAreaController = require('../Controllers/RegistrarArea.controller
 const DeleteUsuario = require('../Controllers/DeleteUsuario.controller');
 const ObtenerUsuario = require('../Controllers/ObtenerUsuario.controller');
 const ActualizarPasswordAdmin = require('../Controllers/ActualizarPasswordAdmin.controller');
+const ActualizarRol = require('../Controllers/ActualizarRol.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -101,5 +102,15 @@ router.post('/cambiar-password', [
     .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
 ], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar contraseñas']),
 ActualizarPasswordAdmin.ActualizarPasswordAdmin);
+
+router.post('/cambiar-rol', [
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+  body('_rol')
+    .notEmpty().withMessage('El rol es requerido')
+    .isInt().withMessage('El rol debe ser un número entero')
+], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar rol']),
+ActualizarRol.ActualizarRol);
 
 module.exports = router;
