@@ -15,6 +15,7 @@ const ObtenerUsuario = require('../Controllers/ObtenerUsuario.controller');
 const ActualizarPasswordAdmin = require('../Controllers/ActualizarPasswordAdmin.controller');
 const ActualizarRol = require('../Controllers/ActualizarRol.controller');
 const ActualizarArea = require('../Controllers/ActualizarArea.controller');
+const EditarUsuario = require('../Controllers/EditarUsuario.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -123,5 +124,27 @@ router.post('/cambiar-area', [
     .isInt().withMessage('El area debe ser un número entero')
 ], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar area']),
 ActualizarArea.ActualizarArea);
+
+router.post('/editar-usuario', [
+  body('_usuario')
+    .notEmpty().withMessage('El nombre de usuario es requerido')
+    .isString().withMessage('El usuario debe ser una cadena de texto')
+    .isLength({ min: 3, max: 100 }).withMessage('El usuario debe tener entre 3 y 100 caracteres'),
+  body('_nombre')
+    .notEmpty().withMessage('El nombre completo es requerido')
+    .isString().withMessage('El nombre debe ser una cadena de texto')
+    .isLength({ min: 3, max: 150 }).withMessage('El nombre debe tener entre 3 y 150 caracteres'),
+  body('_area')
+    .notEmpty().withMessage('El área es requerida')
+    .isInt().withMessage('El área debe ser un número entero'),
+  body('_rol')
+    .notEmpty().withMessage('El rol es requerido')
+    .isInt().withMessage('El rol debe ser un número entero'),
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+], validarErrores,
+checkPermissions.checkPermissions(['Usuarios','Editar usuario']),
+EditarUsuario.EditarUsuario);
 
 module.exports = router;
