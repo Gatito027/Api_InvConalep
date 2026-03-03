@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const cspConfig = require('./Config/cspConfig');
 const mainRoutes = require('./Routers/Main.Routes');
 const dataFormsRoutes = require('./Routers/DataForms.Routes');
+const rolesRoutes = require('./Routers/Roles.Routes');
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -43,6 +44,8 @@ app.use(cspConfig);
 app.use('/', mainRoutes);
 
 app.use('/data', dataFormsRoutes);
+
+app.use('/roles', rolesRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {
