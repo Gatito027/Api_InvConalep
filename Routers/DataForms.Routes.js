@@ -41,4 +41,10 @@ router.post(
     DataFormsController.ObtenerAreaUsuario
 );
 
+router.get(
+    '/permisos',
+    checkPermissions.checkPermissions(['Roles']),
+    DataFormsController.ObtenerPermisos
+);
+
 module.exports = router;
