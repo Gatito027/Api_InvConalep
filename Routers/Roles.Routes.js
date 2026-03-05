@@ -5,6 +5,8 @@ const { body } = require('express-validator');
 const checkPermissions = require('../Utils/CheckPermissions');
 const ListaRoles = require('../Controllers/ListaRoles.controller');
 const CrearRol = require('../Controllers/CrearRol.controller');
+const ObtenerRol = require('../Controllers/ObtenerRol.controller');
+const DeleteRol = require('../Controllers/DeleteRol.controller');
 
 router.get('/roles',
     checkPermissions.checkPermissions(['Roles']),
@@ -21,8 +23,24 @@ router.post('/crear-rol', [
         .isArray().withMessage("Los permisos deben ser un arreglo"),
     body("_permisos.*")
         .isInt().withMessage("Cada permiso debe ser un número entero"),
-    ], validarErrores,
+], validarErrores,
     checkPermissions.checkPermissions(['Roles']),
     CrearRol.CrearRol);
+
+router.post('/ver-rol', [
+    body('_rolId')
+        .notEmpty().withMessage('El rol es requerido')
+        .isInt().withMessage('El rol debe ser un número entero'),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Roles']),
+    ObtenerRol.ObtenerRol);
+
+router.delete('/eliminar-rol', [
+  body('_rolId')
+    .notEmpty().withMessage('El rol es requerido')
+    .isInt().withMessage('El rol debe ser un número entero'),],
+    checkPermissions.checkPermissions(['Roles']),
+    validarErrores,
+    DeleteRol.DeleteRol);
 
 module.exports = router;
