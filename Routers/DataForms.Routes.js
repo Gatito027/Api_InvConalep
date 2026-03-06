@@ -47,4 +47,13 @@ router.get(
     DataFormsController.ObtenerPermisos
 );
 
+router.post('/obtener-rol-permisos', [
+    body('_rolId')
+        .notEmpty().withMessage('El rol es requerido')
+        .isInt().withMessage('El rol debe ser un número entero'),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Roles']),
+    DataFormsController.ObtenerPermisosRol
+);
+
 module.exports = router;

@@ -134,4 +134,34 @@ const ObtenerPermisos = async (req, res) => {
     }
 };
 
-module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos };
+const ObtenerPermisosRol = async (req, res) => {
+    const response = new ResponseDto();
+    try {
+        const { token } = req.cookies;
+        const { _rolId } = req.body;
+        const userData = AuthenticationExtensions.addJwtAuthentication(token);
+
+        const data = await db.query("select * from obtener_roles_permisos_by_id($1);",[_rolId]);
+        logger.info(`Consulta de roles realizada por ${userData?.data?.usuario || 'usuario desconocido'}`);
+
+        if (data.length !== 0) {
+            response.isSuccess = true;
+            response.message = "";
+            response.data = data;
+            return res.status(200).json(response);
+        } else {
+            response.isSuccess = false;
+            response.message = "No se encontró este rol";
+            response.data = null;
+            return res.status(404).json(response);
+        }
+    } catch (error) {
+        logger.error(`Error al obtener los roles con permisos: ${error.message}`);
+        response.isSuccess = false;
+        response.message = "Error interno del servidor";
+        response.data = null;
+        return res.status(500).json(response);
+    }
+};
+
+module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos, ObtenerPermisosRol };
