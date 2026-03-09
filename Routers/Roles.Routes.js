@@ -25,7 +25,7 @@ router.post('/crear-rol', [
     body("_permisos.*")
         .isInt().withMessage("Cada permiso debe ser un número entero"),
 ], validarErrores,
-    checkPermissions.checkPermissions(['Roles']),
+    checkPermissions.checkPermissions(['Roles', 'Crear rol']),
     CrearRol.CrearRol);
 
 router.post('/ver-rol', [
@@ -33,14 +33,14 @@ router.post('/ver-rol', [
         .notEmpty().withMessage('El rol es requerido')
         .isInt().withMessage('El rol debe ser un número entero'),
 ], validarErrores,
-    checkPermissions.checkPermissions(['Roles']),
+    checkPermissions.checkPermissions(['Roles', 'Detalles rol']),
     ObtenerRol.ObtenerRol);
 
 router.delete('/eliminar-rol', [
     body('_rolId')
         .notEmpty().withMessage('El rol es requerido')
         .isInt().withMessage('El rol debe ser un número entero'),],
-    checkPermissions.checkPermissions(['Roles']),
+    checkPermissions.checkPermissions(['Roles', 'Eliminar rol']),
     validarErrores,
     DeleteRol.DeleteRol);
 
@@ -59,7 +59,7 @@ router.put('/editar-rol', [
         .isInt().withMessage("Cada permiso debe ser un número entero"),
     ],
     validarErrores,
-    checkPermissions.checkPermissions(['Roles']),
+    checkPermissions.checkPermissions(['Roles', 'Editar rol']),
     EditarRol.EditarRol);
 
 module.exports = router;
