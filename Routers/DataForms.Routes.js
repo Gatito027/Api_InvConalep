@@ -56,4 +56,19 @@ router.post('/obtener-rol-permisos', [
     DataFormsController.ObtenerPermisosRol
 );
 
+router.get(
+    '/usuarios',
+    checkPermissions.checkPermissions(['Inventario']),
+    DataFormsController.ObtenerPersonas
+);
+
+router.post('/Obtener-asignaciones', [
+    body('_ItemId')
+        .notEmpty().withMessage('El articulo es requerido')
+        .isInt().withMessage('El articulo debe ser un número entero'),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Asignar Articulo']),
+    DataFormsController.ObtenerItemsAsignados
+);
+
 module.exports = router;

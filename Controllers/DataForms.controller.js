@@ -164,4 +164,63 @@ const ObtenerPermisosRol = async (req, res) => {
     }
 };
 
-module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos, ObtenerPermisosRol };
+const ObtenerPersonas = async (req, res) => {
+    const response = new ResponseDto();
+    try {
+        const { token } = req.cookies;
+        const userData = AuthenticationExtensions.addJwtAuthentication(token);
+
+        const data = await db.query("select usuarioid, nombre from usuarios;",[]);
+        logger.info(`Consulta de usuarios realizada por ${userData?.data?.usuario || 'usuario desconocido'}`);
+
+        if (data.length !== 0) {
+            response.isSuccess = true;
+            response.message = "";
+            response.data = data;
+            return res.status(200).json(response);
+        } else {
+            response.isSuccess = false;
+            response.message = "No se encontró registros";
+            response.data = null;
+            return res.status(404).json(response);
+        }
+    } catch (error) {
+        logger.error(`Error al obtener los usuarios: ${error.message}`);
+        response.isSuccess = false;
+        response.message = "Error interno del servidor";
+        response.data = null;
+        return res.status(500).json(response);
+    }
+};
+
+const ObtenerItemsAsignados = async (req, res) => {
+    const response = new ResponseDto();
+    try {
+        const { token } = req.cookies;
+        const { _ItemId } = req.body;
+        const userData = AuthenticationExtensions.addJwtAuthentication(token);
+
+        const data = await db.query("select u.usuarioid, u.nombre from asignaciones as a inner join usuarios as u on a.usuarioid = u.usuarioid where a.bienid = $1;",[_ItemId]);
+        logger.info(`Consulta de usuarios realizada por ${userData?.data?.usuario || 'usuario desconocido'}`);
+
+        if (data.length !== 0) {
+            response.isSuccess = true;
+            response.message = "";
+            response.data = data;
+            return res.status(200).json(response);
+        } else {
+            response.isSuccess = false;
+            response.message = "No se encontró registros";
+            response.data = null;
+            return res.status(404).json(response);
+        }
+    } catch (error) {
+        logger.error(`Error al obtener los usuarios: ${error.message}`);
+        response.isSuccess = false;
+        response.message = "Error interno del servidor";
+        response.data = null;
+        return res.status(500).json(response);
+    }
+};
+
+module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos, ObtenerPermisosRol, ObtenerPersonas, ObtenerItemsAsignados };
