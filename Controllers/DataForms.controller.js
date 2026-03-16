@@ -223,4 +223,27 @@ const ObtenerItemsAsignados = async (req, res) => {
     }
 };
 
-module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos, ObtenerPermisosRol, ObtenerPersonas, ObtenerItemsAsignados };
+const ListaLugares = async (req, res) => {
+    const response = new ResponseDto();
+    try {
+        const { token } = req.cookies;
+        const userData = AuthenticationExtensions.addJwtAuthentication(token);
+
+        const data = await db.query("SELECT * FROM public.lugares;");
+        logger.info(`Consulta de lugares realizada por ${userData?.data?.usuario || 'usuario desconocido'}`);
+
+        response.isSuccess = true;
+        response.message = "";
+        response.data = data;
+        return res.status(200).json(response);
+
+    } catch (error) {
+        logger.error(`Error al obtener lugares: ${error.message}`);
+        response.isSuccess = false;
+        response.message = "Error interno del servidor";
+        response.data = null;
+        return res.status(500).json(response);
+    }
+};
+
+module.exports = { ListaRoles, ListaAreas, ObtenerRolUsuario, ObtenerAreaUsuario, ObtenerPermisos, ObtenerPermisosRol, ObtenerPersonas, ObtenerItemsAsignados, ListaLugares };

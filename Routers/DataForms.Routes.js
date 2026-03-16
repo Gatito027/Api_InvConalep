@@ -71,4 +71,9 @@ router.post('/Obtener-asignaciones', [
     DataFormsController.ObtenerItemsAsignados
 );
 
+router.get('/lugares',
+    checkPermissions.checkPermissions(['Inventario']),
+    DataFormsController.ListaLugares
+);
+
 module.exports = router;

@@ -7,6 +7,7 @@ const ListaArticulos = require('../Controllers/ListaArticulos.controller');
 const ObtenerArticulo = require('../Controllers/ObtenerArticulo.controller');
 const DeleteArticulo = require('../Controllers/DeleteArticulo.controller');
 const AsignarArticulo = require('../Controllers/AsignarArticulo.controller');
+const ActualizarLugarArticulo = require('../Controllers/ActualizarLugarArticulo.controller');
 
 router.get('/articulos',
     checkPermissions.checkPermissions(['Inventario']),
@@ -43,6 +44,31 @@ router.put('/asignar-articulo', [
     ], validarErrores,
     checkPermissions.checkPermissions(['Inventario', 'Asignar Articulo']),
     AsignarArticulo.AsignarArticulo
+);
+
+router.put('/actualizar-lugar', [
+    body('_ItemId')
+        .notEmpty().withMessage('El item es requerido')
+        .isInt().withMessage('El item debe ser un número entero'),
+    body('_lugarId')
+        .notEmpty().withMessage('El lugar es requerido')
+        .isInt().withMessage('El lugar debe ser un número entero'),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Cambiar ubicacion']),
+    ActualizarLugarArticulo.ActualizarLugarArticulo
+);
+
+router.put('/actualizar-registrar-lugar', [
+    body('_ItemId')
+        .notEmpty().withMessage('El item es requerido')
+        .isInt().withMessage('El item debe ser un número entero'),
+    body('_lugar')
+        .notEmpty().withMessage('El lugar es requerido')
+        .isString().withMessage('El lugar debe ser una cadena de texto')
+        .isLength({ min: 1, max: 200 }).withMessage('El nombre debe tener entre 1 y 200 caracteres'),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Cambiar ubicacion']),
+    ActualizarLugarArticulo.RegistrarLugarArticulo
 );
 
 module.exports = router;
