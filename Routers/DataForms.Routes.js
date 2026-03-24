@@ -4,6 +4,7 @@ const { validarErrores } = require('../Utils/expressValidator');
 const { body } = require('express-validator');
 const checkPermissions = require('../Utils/CheckPermissions');
 const DataFormsController = require("../Controllers/DataForms.controller");
+const ItemDataFormsController = require("../Controllers/ItemDataForms.controller");
 
 router.get(
     '/roles',
@@ -74,6 +75,21 @@ router.post('/Obtener-asignaciones', [
 router.get('/lugares',
     checkPermissions.checkPermissions(['Inventario']),
     DataFormsController.ListaLugares
+);
+
+router.get('/modelos',
+    checkPermissions.checkPermissions(['Inventario']),
+    ItemDataFormsController.ListaModelos
+);
+
+router.get('/marcas',
+    checkPermissions.checkPermissions(['Inventario']),
+    ItemDataFormsController.ListaMarcas
+);
+
+router.get('/cuentas',
+    checkPermissions.checkPermissions(['Inventario']),
+    ItemDataFormsController.ListaCuentas
 );
 
 module.exports = router;
