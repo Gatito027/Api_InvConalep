@@ -193,17 +193,17 @@ const RegistrarItem = async (req, res) => {
             if (req.files["imagen"]) {
                 const file = req.files["imagen"][0];
                 imageUrl = `${baseUrl}/Uploads/imagenes/${file.filename}`;
-                imageLocalPath = path.join("wwwroot", "Uploads", file.filename);
+                imageLocalPath = path.join("wwwroot", "Uploads", "imagenes", file.filename);
             }
             if (req.files["baja"]) {
                 const file = req.files["baja"][0];
                 bajaUrl = `${baseUrl}/Uploads/pdfs/${file.filename}`;
-                bajaLocalPath = path.join("wwwroot", "Uploads", file.filename);
+                bajaLocalPath = path.join("wwwroot", "Uploads", "pdfs", file.filename);
             }
             if (req.files["poliza"]) {
                 const file = req.files["poliza"][0];
                 polizaUrl = `${baseUrl}/Uploads/pdfs/${file.filename}`;
-                polizaLocalPath = path.join("wwwroot", "Uploads", file.filename);
+                polizaLocalPath = path.join("wwwroot", "Uploads", "pdfs", file.filename);
             }
         }
 

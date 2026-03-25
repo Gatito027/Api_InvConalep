@@ -19,7 +19,8 @@ const cspConfig = helmet.contentSecurityPolicy({
     'frame-src':   [SELF, BACKEND, ...ALLOWED_ORIGINS],
     'connect-src': [SELF, BACKEND, ...ALLOWED_ORIGINS],
     'font-src':    [SELF, 'https://fonts.gstatic.com'],
-    'object-src':  [NONE],
+    'object-src':  [SELF, BACKEND, ...ALLOWED_ORIGINS],
+    'frame-ancestors': [SELF, BACKEND, ...ALLOWED_ORIGINS],
     'upgrade-insecure-requests': [],
   },
 });

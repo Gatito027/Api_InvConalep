@@ -43,6 +43,7 @@ app.use(cookieParser());
 app.use(helmet({
     crossOriginResourcePolicy: false,
     contentSecurityPolicy: false, // cspConfig.js lo maneja
+    frameguard: false,
 }));
 app.use(cspConfig);
 //* configracion de archivos
@@ -62,6 +63,7 @@ app.use('/inv', inventarioRoutes);
 
 app.use('/Uploads', (req, res, next) => {
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+    res.setHeader('X-Frame-Options', 'ALLOWALL');
     next();
   },express.static(uploadDir, {
   dotfiles: 'ignore',
