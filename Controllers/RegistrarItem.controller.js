@@ -256,6 +256,15 @@ const RegistrarItem = async (req, res) => {
             response.isSuccess = false;
             response.message = "Error al registrar el item";
             response.data = null;
+            if (fs.existsSync(imageLocalPath)) {
+                await fs.promises.unlink(imageLocalPath);
+            }
+            if (fs.existsSync(bajaLocalPath)) {
+                await fs.promises.unlink(bajaLocalPath);
+            }
+            if (fs.existsSync(polizaLocalPath)) {
+                await fs.promises.unlink(polizaLocalPath);
+            }
             return res.status(400).json(response);
         }
 
@@ -264,6 +273,15 @@ const RegistrarItem = async (req, res) => {
         response.isSuccess = false;
         response.message = "Error interno del servidor";
         response.data = null;
+        if (fs.existsSync(imageLocalPath)) {
+            await fs.promises.unlink(imageLocalPath);
+        }
+        if (fs.existsSync(bajaLocalPath)) {
+            await fs.promises.unlink(bajaLocalPath);
+        }
+        if (fs.existsSync(polizaLocalPath)) {
+            await fs.promises.unlink(polizaLocalPath);
+        }
         return res.status(500).json(response);
     }
 };

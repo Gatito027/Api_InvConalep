@@ -10,6 +10,7 @@ const DeleteArticulo = require('../Controllers/DeleteArticulo.controller');
 const AsignarArticulo = require('../Controllers/AsignarArticulo.controller');
 const ActualizarLugarArticulo = require('../Controllers/ActualizarLugarArticulo.controller');
 const RegistrarItem = require('../Controllers/RegistrarItem.controller');
+const EditarBien = require('../Controllers/EditarBien.controller');
 
 const uploadMiddleware = upload.fields([
     { name: "imagen", maxCount: 1 },
@@ -229,8 +230,122 @@ router.post('/registrar-bien',
         .matches(/^\d{4}-\d{2}-\d{2}$/)
         .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
     ], validarErrores,
-    checkPermissions.checkPermissions(['Inventario']),
+    checkPermissions.checkPermissions(['Inventario', 'Agregar articulo']),
     RegistrarItem.RegistrarItem
+);
+
+router.put('/editar-bien', uploadAndParse, [
+    body('_subcuenta')
+        .optional()
+        .isInt().withMessage('La cuenta armonizada debe ser un número entero'),
+    body('_descripcion')
+        .notEmpty().withMessage('La descripción es requerida')
+        .isString().withMessage('La descripción debe ser una cadena de texto')
+        .isLength({ min: 1, max: 200 }).withMessage('La descripción debe tener entre 1 y 200 caracteres'),
+    body('_codigoPartida')
+        .optional()
+        .isString().withMessage('El código de partida debe ser una cadena de texto')
+        .matches(/^\d+-\d+$/).withMessage("Formato inválido, debe ser números-números (ej. 54332-3253)")
+        .isLength({ min: 1 }).withMessage('El código de partida debe tener al menos 1 caracter'),
+    body('_numeroInv')
+        .notEmpty().withMessage('El numero de inventario es requerido')
+        .isInt().withMessage('El numero de inventario debe ser un número entero'),
+    body('_observaciones')
+        .optional()
+        .isString().withMessage('Las observaciones debe ser una cadena de texto')
+        .isLength({ min: 1 }).withMessage('Las observaciones deben tener al menos 1 caracter'),
+    body('_lugarId')
+        .notEmpty().withMessage('El lugar es requerido')
+        .isInt().withMessage('El lugar debe ser un número entero'),
+    body('_marcaId')
+        .optional()
+        .isInt().withMessage('La marca debe ser un número entero'),
+    body('_modeloId')
+        .optional()
+        .isInt().withMessage('El modelo debe ser un número entero'),
+    body('_numeroSerie')
+        .optional()
+        .isString().withMessage('El numero de serie debe ser una cadena de texto')
+        .isLength({ min: 1, max: 255 }).withMessage('El numero de serie debe tener entre 1 y 255 caracteres'),
+    body('_estado')
+        .notEmpty().withMessage('El estado es requerido')
+        .isString().withMessage('El estado debe ser una cadena de texto')
+        .isLength({ min: 1, max: 20 }).withMessage('El estado debe tener entre 1 y 20 caracteres'),
+    body('_costoAdquisicion')
+        .optional()
+        .isFloat({ min: 0, max: 9999999, decimal_digits: '0,2' })
+        .withMessage("El precio debe ser un número válido con hasta dos decimales (ej. 100.50)"),
+    body('_depreciacion')
+        .optional()
+        .isFloat({ min: 0, max: 9999999, decimal_digits: '0,2' })
+        .withMessage("El precio debe ser un número válido con hasta dos decimales (ej. 100.50)"),
+    body('_valorLibros')
+        .optional()
+        .isFloat({ min: 0, max: 9999999, decimal_digits: '0,2' })
+        .withMessage("El precio debe ser un número válido con hasta dos decimales (ej. 100.50)"),
+    body('_fechaResguardo')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_motivoResguardo')
+        .optional()
+        .isString().withMessage('El motivo de resguardo debe ser una cadena de texto')
+        .isLength({ min: 1, max: 250 }).withMessage('El motivo de resguardo debe tener entre 1 y 250 caracteres'),
+    body('_departamentoId')
+        .optional()
+        .isInt().withMessage('El departamento debe ser un número entero'),
+    body('_fechaAdquisicion')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_fechaAlta')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_cantidad')
+        .notEmpty().withMessage('La cantidad es requerido')
+        .isInt().withMessage('La cantidad debe ser un número entero'),
+    body('_donativo')
+        .notEmpty().withMessage('El donativo es requerido')
+        .isBoolean().withMessage("Donativo debe ser true o false"),
+    body('_cotizacion')
+        .optional()
+        .isFloat({ min: 0, max: 9999999, decimal_digits: '0,2' })
+        .withMessage("El precio debe ser un número válido con hasta dos decimales (ej. 100.50)"),
+    body('_cuenta')
+        .optional()
+        .isString().withMessage('La cuenta debe ser una cadena de texto'),
+    body('_vidaUtil')
+        .optional()
+        .isInt().withMessage('La vida util debe ser un número entero'),
+    body('_fechaBaja')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_tipoBaja')
+        .optional()
+        .isString().withMessage('El tipo de baja debe ser una cadena de texto')
+        .isLength({ min: 1, max: 250 }).withMessage('El tipo de baja debe tener entre 1 y 250 caracteres'),
+    body('_fechaPoliza')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_fechaDocumentoPoliza')
+        .optional()
+        .matches(/^\d{4}-\d{2}-\d{2}$/)
+        .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_ItemId')
+        .notEmpty().withMessage('El item es requerido')
+        .isInt().withMessage('El item debe ser un número entero'),
+    body('_borrarBaja')
+        .notEmpty().withMessage('Borrar baja es requerido')
+        .isBoolean().withMessage("Borrar baja debe ser true o false"),
+    body('_borrarPoliza')
+        .notEmpty().withMessage('Borrar baja es requerido')
+        .isBoolean().withMessage("Borrar baja debe ser true o false"),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Editar articulo']),
+    EditarBien.EditarBien
 );
 
 module.exports = router;
