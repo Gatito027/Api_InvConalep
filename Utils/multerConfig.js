@@ -17,6 +17,12 @@ const storage = multer.diskStorage({
             subFolder = "pdfs";
         } else if (file.mimetype.startsWith("text/")) {
             subFolder = "textos";
+        } else if (file.mimetype === "application/pdf") {
+            subFolder = "pdfs";
+        } else if (file.mimetype === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+            subFolder = "temp";
+        } else if (file.mimetype === "application/vnd.ms-excel") {
+            subFolder = "temp";
         }
 
         const uploadPath = path.join(basePath, subFolder);

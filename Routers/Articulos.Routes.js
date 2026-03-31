@@ -11,11 +11,13 @@ const AsignarArticulo = require('../Controllers/AsignarArticulo.controller');
 const ActualizarLugarArticulo = require('../Controllers/ActualizarLugarArticulo.controller');
 const RegistrarItem = require('../Controllers/RegistrarItem.controller');
 const EditarBien = require('../Controllers/EditarBien.controller');
+const ImportarInventario = require('../Controllers/ImportarInventario.controller');
 
 const uploadMiddleware = upload.fields([
     { name: "imagen", maxCount: 1 },
     { name: "baja", maxCount: 1 },
-    { name: "poliza", maxCount: 1 }
+    { name: "poliza", maxCount: 1 },
+    { name: "archivo", maxCount: 1}
 ]);
 
 // Wrapper que garantiza que Multer termine antes de continuar
@@ -347,5 +349,7 @@ router.put('/editar-bien', uploadAndParse, [
     checkPermissions.checkPermissions(['Inventario', 'Editar articulo']),
     EditarBien.EditarBien
 );
+
+router.post('/importar', uploadAndParse, ImportarInventario.ImportarInventario);
 
 module.exports = router;
