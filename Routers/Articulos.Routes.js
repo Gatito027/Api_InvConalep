@@ -12,6 +12,7 @@ const ActualizarLugarArticulo = require('../Controllers/ActualizarLugarArticulo.
 const RegistrarItem = require('../Controllers/RegistrarItem.controller');
 const EditarBien = require('../Controllers/EditarBien.controller');
 const ImportarInventario = require('../Controllers/ImportarInventario.controller');
+const ExportarInvetario = require('../Controllers/ExportarInventario.controller');
 
 const uploadMiddleware = upload.fields([
     { name: "imagen", maxCount: 1 },
@@ -350,6 +351,10 @@ router.put('/editar-bien', uploadAndParse, [
     EditarBien.EditarBien
 );
 
-router.post('/importar', uploadAndParse, ImportarInventario.ImportarInventario);
+router.post('/importar', uploadAndParse, 
+    checkPermissions.checkPermissions(['Inventario', 'Importar Excel']), 
+    ImportarInventario.ImportarInventario);
+
+router.post('/exportar', ExportarInvetario.ExportarInvetario);
 
 module.exports = router;
