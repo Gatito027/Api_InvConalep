@@ -13,12 +13,13 @@ const RegistrarItem = require('../Controllers/RegistrarItem.controller');
 const EditarBien = require('../Controllers/EditarBien.controller');
 const ImportarInventario = require('../Controllers/ImportarInventario.controller');
 const ExportarInvetario = require('../Controllers/ExportarInventario.controller');
+const EtiquetadoInvetario = require('../Controllers/EtiquetadoInventario.controller');
 
 const uploadMiddleware = upload.fields([
     { name: "imagen", maxCount: 1 },
     { name: "baja", maxCount: 1 },
     { name: "poliza", maxCount: 1 },
-    { name: "archivo", maxCount: 1}
+    { name: "archivo", maxCount: 1 }
 ]);
 
 // Wrapper que garantiza que Multer termine antes de continuar
@@ -131,8 +132,8 @@ router.post('/registrar-cuenta', [
     RegistrarItem.RegistrarCuenta
 );
 
-router.post('/registrar-bien', 
-    uploadAndParse,[
+router.post('/registrar-bien',
+    uploadAndParse, [
     body('_subcuenta')
         .optional()
         .isInt().withMessage('La cuenta armonizada debe ser un número entero'),
@@ -232,7 +233,7 @@ router.post('/registrar-bien',
         .optional()
         .matches(/^\d{4}-\d{2}-\d{2}$/)
         .withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
-    ], validarErrores,
+], validarErrores,
     checkPermissions.checkPermissions(['Inventario', 'Agregar articulo']),
     RegistrarItem.RegistrarItem
 );
@@ -346,15 +347,93 @@ router.put('/editar-bien', uploadAndParse, [
     body('_borrarPoliza')
         .notEmpty().withMessage('Borrar baja es requerido')
         .isBoolean().withMessage("Borrar baja debe ser true o false"),
-    ], validarErrores,
+], validarErrores,
     checkPermissions.checkPermissions(['Inventario', 'Editar articulo']),
     EditarBien.EditarBien
 );
 
-router.post('/importar', uploadAndParse, 
-    checkPermissions.checkPermissions(['Inventario', 'Importar Excel']), 
+router.post('/importar', uploadAndParse,
+    checkPermissions.checkPermissions(['Inventario', 'Importar Excel']),
     ImportarInventario.ImportarInventario);
 
-router.post('/exportar', ExportarInvetario.ExportarInvetario);
+router.post('/exportar', [
+    body('_startedNumInv')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El número de inventario inicial debe ser un número entero'),
+    body('_endNumInv')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El número de inventario final debe ser un número entero'),
+    body('_estado')
+        .optional({ checkFalsy: true })
+        .isString().withMessage('El estado debe ser una cadena de texto')
+        .isLength({ min: 1, max: 20 }).withMessage('El estado debe tener entre 1 y 20 caracteres'),
+    body('_lugarId')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El lugar debe ser un número entero'),
+    body('_descripcion')
+        .optional({ checkFalsy: true })
+        .isString().withMessage('La descripción debe ser una cadena de texto')
+        .isLength({ min: 1, max: 200 }).withMessage('La descripción debe tener entre 1 y 200 caracteres'),
+    body('_startedFechaAlta')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_endFechaAlta')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_startedFechaAdq')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_endFechaAdq')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_usuarioId')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El usuario debe ser un número entero'),
+    body('_donativo')
+        .optional({ checkFalsy: true })
+        .isBoolean().withMessage("Donativo debe ser true o false"),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Exportar Excel']),
+    ExportarInvetario.ExportarInvetario);
+
+router.post('/etiquetado', [
+    body('_startedNumInv')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El número de inventario inicial debe ser un número entero'),
+    body('_endNumInv')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El número de inventario final debe ser un número entero'),
+    body('_estado')
+        .optional({ checkFalsy: true })
+        .isString().withMessage('El estado debe ser una cadena de texto')
+        .isLength({ min: 1, max: 20 }).withMessage('El estado debe tener entre 1 y 20 caracteres'),
+    body('_lugarId')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El lugar debe ser un número entero'),
+    body('_descripcion')
+        .optional({ checkFalsy: true })
+        .isString().withMessage('La descripción debe ser una cadena de texto')
+        .isLength({ min: 1, max: 200 }).withMessage('La descripción debe tener entre 1 y 200 caracteres'),
+    body('_startedFechaAlta')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_endFechaAlta')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_startedFechaAdq')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_endFechaAdq')
+        .optional({ checkFalsy: true })
+        .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage("Formato inválido, la fecha debe ser YYYY-MM-DD (ej. 2026-03-24)"),
+    body('_usuarioId')
+        .optional({ checkFalsy: true })
+        .isInt().withMessage('El usuario debe ser un número entero'),
+    body('_donativo')
+        .optional({ checkFalsy: true })
+        .isBoolean().withMessage("Donativo debe ser true o false"),
+    ], validarErrores,
+    checkPermissions.checkPermissions(['Inventario', 'Descargar Etiquetado']),
+    EtiquetadoInvetario.EtiquetadoInvetario);
 
 module.exports = router;
