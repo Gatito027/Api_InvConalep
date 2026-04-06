@@ -16,6 +16,7 @@ const ActualizarPasswordAdmin = require('../Controllers/ActualizarPasswordAdmin.
 const ActualizarRol = require('../Controllers/ActualizarRol.controller');
 const ActualizarArea = require('../Controllers/ActualizarArea.controller');
 const EditarUsuario = require('../Controllers/EditarUsuario.controller');
+const RestablecerPassword = require('../Controllers/RestablecerPassword.controller');
 
 //* Rutas del proyecto
 router.post('/registrar-usuario', [
@@ -46,7 +47,7 @@ router.post('/registrar-usuario', [
     .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
     .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
 ],
-  validarErrores,
+  validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Registrar Usuarios']),
   registerController.register
 );
 
@@ -105,6 +106,25 @@ router.post('/cambiar-password', [
 ], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar contraseñas']),
 ActualizarPasswordAdmin.ActualizarPasswordAdmin);
 
+router.post('/restablecer-password', [
+  body('_password')
+    .notEmpty().withMessage('La contraseña es requerida')
+    .isString().withMessage('La contraseña debe ser una cadena de texto')
+    .isLength({ min: 8, max: 100 }).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
+    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
+    .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
+    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
+    .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)'),
+  body('_oldPassword')
+    .notEmpty().withMessage('La contraseña es requerida')
+    .isString().withMessage('La contraseña debe ser una cadena de texto')
+    .isLength({ min: 8, max: 100 }).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
+    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
+    .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
+    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
+    .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+], validarErrores, RestablecerPassword.RestablecerPassword);
+
 router.post('/cambiar-rol', [
   body('_usuarioId')
     .notEmpty().withMessage('El usuario es requerido')
@@ -123,6 +143,16 @@ router.post('/cambiar-area', [
     .notEmpty().withMessage('El area es requerida')
     .isInt().withMessage('El area debe ser un número entero')
 ], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Cambiar area']),
+ActualizarArea.ActualizarArea);
+
+router.post('/cambiar-area-usuario', [
+  body('_usuarioId')
+    .notEmpty().withMessage('El usuario es requerido')
+    .isInt().withMessage('El usuario debe ser un número entero'),
+  body('_area')
+    .notEmpty().withMessage('El area es requerida')
+    .isInt().withMessage('El area debe ser un número entero')
+], validarErrores, checkPermissions.checkPermissions(['Usuarios', 'Editar mi area']),
 ActualizarArea.ActualizarArea);
 
 router.post('/editar-usuario', [

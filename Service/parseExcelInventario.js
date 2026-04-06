@@ -25,7 +25,7 @@ const COLUMN_MAP = {
   "Cantidad": "cantidad",
   "Donativo": "donativo",
   "Valor Cotización": "valor_cotizacion",
-  "Cuenta Dep.": "departamento",
+  "Cuenta dep.": "departamento",
   "Años de vida útil": "vida_util",
   "Fecha de baja": "fecha_baja",
   "Tipo de baja": "tipo_baja",
