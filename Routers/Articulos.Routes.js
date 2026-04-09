@@ -14,6 +14,7 @@ const EditarBien = require('../Controllers/EditarBien.controller');
 const ImportarInventario = require('../Controllers/ImportarInventario.controller');
 const ExportarInvetario = require('../Controllers/ExportarInventario.controller');
 const EtiquetadoInvetario = require('../Controllers/EtiquetadoInventario.controller');
+const ListaMisArticulos = require('../Controllers/ListaMisArticulos.controller');
 
 const uploadMiddleware = upload.fields([
     { name: "imagen", maxCount: 1 },
@@ -34,6 +35,8 @@ router.get('/articulos',
     checkPermissions.checkPermissions(['Inventario']),
     ListaArticulos.ListaArticulos
 );
+
+router.get('/mis-articulos', ListaMisArticulos.ListaMisArticulos);
 
 router.post('/articulo', [
     body('_ItemId')

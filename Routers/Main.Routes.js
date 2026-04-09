@@ -118,11 +118,7 @@ router.post('/restablecer-password', [
   body('_oldPassword')
     .notEmpty().withMessage('La contraseña es requerida')
     .isString().withMessage('La contraseña debe ser una cadena de texto')
-    .isLength({ min: 8, max: 100 }).withMessage('La contraseña debe tener entre 8 y 100 caracteres')
-    .matches(/[A-Z]/).withMessage('La contraseña debe contener al menos una letra mayúscula')
-    .matches(/[a-z]/).withMessage('La contraseña debe contener al menos una letra minúscula')
-    .matches(/[0-9]/).withMessage('La contraseña debe contener al menos un número')
-    .matches(/[@$!%*?&]/).withMessage('La contraseña debe contener al menos un carácter especial (@$!%*?&)')
+    .isLength({ min: 1, max: 100 }).withMessage('La contraseña debe tener entre 8 y 100 caracteres'),
 ], validarErrores, RestablecerPassword.RestablecerPassword);
 
 router.post('/cambiar-rol', [

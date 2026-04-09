@@ -50,7 +50,7 @@ const RestablecerPassword = async (req, res) => {
         if (!passwordMatch) {
             logger.warn(`Contraseña incorrecta para usuario ${usuarioId}`);
             response.isSuccess = false;
-            response.message = "Credenciales inválidas";
+            response.message = "Contraseña equivocada";
             response.data = null;
             return res.status(401).json(response);
         }
